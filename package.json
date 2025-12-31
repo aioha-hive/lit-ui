@@ -1,5 +1,6 @@
 {
   "name": "@aioha/lit-ui",
+  "description": "Ready-made Lit web component for Aioha",
   "version": "1.8.0",
   "type": "module",
   "main": "build/index.js",

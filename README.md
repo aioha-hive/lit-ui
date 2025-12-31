@@ -100,24 +100,26 @@ export class Homepage extends LitElement {
 
 ## `<aioha-modal>` component
 
-|Property|Required?|Description|Default|
-|-|-|-|-|
-|`displayed`|❌|Boolean of whether the modal is displayed.|*false*|
-|`lightMode`|❌|Display the modal in light mode.|*false*|
-|`loginTitle`|❌|Login title to be displayed.|Connect Wallet|
-|`loginHelpUrl`|❌|Help URL to be linked under provider selection view, if any.|*undefined*|
-|`loginOptions`|✅|Aioha login options. See available configuration [here](https://aioha.dev/docs/core/usage#login).||
-|`discOptions`|❌|Account discovery options for supported providers. Details [here](https://aioha.dev/docs/core/usage#discover-accounts).||
-|`arrangement`|❌|Display view preference of provider selection. Valid values: `list` and `grid`.|list|
-|`onLogin`|❌|Callback function to be called upon successful login, if any. Parameter contains login result as defined [here](https://aioha.dev/docs/core/usage#login).|
-|`onClose`|❌|Function to be called to close the modal.||
-|`imageServer`|❌|Image server URL for user avatar.|https://images.hive.blog|
-|`explorerUrl`|❌|Hive block explorer URL.|https://hivehub.dev|
-|`forceShowProviders`|❌|List of `Providers` to force show as login option, which must be registered already. Clicking on unavailable providers displayed will open the URL of the provider landing page.|*[]*|
+|Property|Description|Default|
+|-|-|-|
+|`displayed`|Boolean of whether the modal is displayed.|*false*|
+|`lightMode`|Display the modal in light mode.|*false*|
+|`loginTitle`|Login title to be displayed.|Connect Wallet|
+|`loginHelpUrl`|Help URL to be linked under provider selection view, if any.|*undefined*|
+|`loginOptions`|Aioha login options. See available configuration [here](https://aioha.dev/docs/core/usage#login).||
+|`discOptions`|Account discovery options for supported providers. Details [here](https://aioha.dev/docs/core/usage#discover-accounts).||
+|`arrangement`|Display view preference of provider selection. Valid values: `list` and `grid`.|list|
+|`onLogin`|Callback function to be called upon successful login, if any. Parameter contains login result as defined [here](https://aioha.dev/docs/core/usage#login).|
+|`onClose`|Function to be called to close the modal.||
+|`imageServer`|Image server URL for user avatar.|https://images.hive.blog|
+|`explorerUrl`|Hive block explorer URL.|https://hivehub.dev|
+|`forceShowProviders`|List of `Providers` to force show as login option, which must be registered already. Clicking on unavailable providers displayed will open the URL of the provider landing page.|*[]*|
 
 ℹ️ Note: `hiveauth.cbWait` in `loginOptions` will be overriden as `AiohaModal` will handle the presentation of HiveAuth QR codes.
 
 When `displayed` is specified to a reactive state, use the `onClose` method to set that reactive state to `false` to properly close the modal.
+
+All properties are optional except `loginOptions`.
 
 ## Universal Web Component
 

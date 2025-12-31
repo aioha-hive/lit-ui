@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aioha Components Demo</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@aioha/aioha": "https://unpkg.com/@aioha/aioha@latest/dist/bundle.js",
+          "@aioha/lit-ui": "https://unpkg.com/@aioha/lit-ui@latest/dist/bundle.min.js"
+        }
+      }
+    </script>
+  </head>
+  <body style="margin: 0; min-height: 100vh; background-color: #1f2937">
+    <div id="app" style="display: flex; align-items: center; justify-content: center; min-height: 100vh">
+      <button
+        id="connectButton"
+        type="button"
+        style="
+          background-color: #374151;
+          color: white;
+          border: 1px solid #4b5563;
+          padding: 10px 20px;
+          font-size: 14px;
+          border-radius: 8px;
+          cursor: pointer;
+        "
+      >
+        Connect Wallet
+      </button>
+      <div id="loginModal"></div>
+    </div>
+  </body>
+  <script type="module">
+    import { initAioha, KeyTypes } from '@aioha/aioha'
+    import { initModal } from '@aioha/lit-ui'
+
+    // Create Aioha instance
+    const aioha = initAioha({
+      hivesigner: {
+        app: 'ipfsuploader.app',
+        callbackURL: window.location.origin + '/hivesigner',
+        scope: ['login', 'vote']
+      },
+      hiveauth: {
+        name: 'Aioha Web Components Demo'
+      }
+    })
+
+    const modal = initModal(aioha, document.getElementById('loginModal'), {
+      loginOptions: {
+        msg: 'Hello World',
+        keyType: KeyTypes.Posting,
+        metamask: {
+          validateUser: true
+        }
+      },
+      arrangement: 'grid',
+      onLogin: (result) => {
+        console.log(result)
+      }
+    })
+
+    // Handle button click
+    const connectButton = document.getElementById('connectButton')
+    connectButton.addEventListener('click', () => (modal.displayed = true))
+
+    // Listen for login state changes
+    const updateBtnLabel = () => (connectButton.textContent = aioha.getCurrentUser() || 'Connect Wallet')
+    aioha.on('connect', updateBtnLabel)
+    aioha.on('disconnect', updateBtnLabel)
+    aioha.on('account_changed', updateBtnLabel)
+
+    // Check initial state
+    updateBtnLabel()
+  </script>
+</html>

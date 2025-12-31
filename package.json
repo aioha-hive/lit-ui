@@ -1,0 +1,67 @@
+{
+  "name": "@aioha/lit-ui",
+  "version": "1.8.0",
+  "type": "module",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "npx @tailwindcss/cli -o build/index.css --minify && tsc --p ./tsconfig.build.json && cp -r lib/logos build/",
+    "build:bundle": "vite build --config vite.bundle.config.ts -m production",
+    "prepublish": "rm -rf build/* dist/* && pnpm run build && pnpm run build:bundle",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "aioha",
+    "lit",
+    "hive",
+    "blockchain",
+    "authentication",
+    "web3"
+  ],
+  "author": "techcoderx",
+  "license": "MIT",
+  "homepage": "https://aioha.dev",
+  "repository": {
+    "url": "https://github.com/aioha-hive/lit-ui"
+  },
+  "bugs": {
+    "url": "https://github.com/aioha-hive/lit-ui/issues"
+  },
+  "files": [
+    "build",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "@aioha/providers": "^1.8.2",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@aioha/aioha": "^1.8.0",
+    "@lit/context": "^1.1.6",
+    "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/qrcode": "^1.5.6",
+    "lit": "^3.3.2",
+    "tailwindcss": "^4.1.18",
+    "terser": "^5.44.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "peerDependencies": {
+    "@aioha/aioha": "^1.8.0",
+    "@lit/context": "^1.1.6",
+    "lit": "^3.3.2"
+  },
+  "peerDependenciesMeta": {
+    "@lit/context": {
+      "optional": true
+    },
+    "lit": {
+      "optional": true
+    }
+  }
+}

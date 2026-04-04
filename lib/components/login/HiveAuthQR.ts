@@ -54,7 +54,7 @@ export class HiveAuthQR extends LitElement {
       </p>
 
       <div class="bg-white p-4 w-64 aspect-square mx-auto my-5">
-        <a href="${this.payload}" target="_blank" rel="noopener noreferrer">
+        <a href="${this.payload}" target="_blank" rel="noopener noreferrer" aria-label="Open HiveAuth payload link">
           <div class="h-full w-full flex items-center justify-center">
             <canvas></canvas>
           </div>

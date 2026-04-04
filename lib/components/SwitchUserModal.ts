@@ -63,7 +63,7 @@ export class SwitchUserModal extends LitElement {
   render() {
     return html`
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Switch User</h3>
+        <h3 id="aioha-modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">Switch User</h3>
         <button
           type="button"
           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
@@ -79,7 +79,16 @@ export class SwitchUserModal extends LitElement {
               ? html`
                   <tr
                     class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
+                    role="button"
+                    tabindex="0"
+                    aria-label="${this._editing ? `Remove ${this._user}` : `Switch to ${this._user}`}"
                     @click="${() => this._handleUserClick(this._user!)}"
+                    @keydown="${(e: KeyboardEvent) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        this._handleUserClick(this._user!)
+                      }
+                    }}"
                   >
                     <td class="px-5 py-4 whitespace-nowrap">
                       <div class="text-sm font-medium text-gray-900 dark:text-gray-100">${this._user}</div>
@@ -93,7 +102,19 @@ export class SwitchUserModal extends LitElement {
               : ''}
             ${Object.keys(this._otherUsers).map(
               (u) => html`
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer" @click="${() => this._handleUserClick(u)}">
+                <tr
+                  class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
+                  role="button"
+                  tabindex="0"
+                  aria-label="${this._editing ? `Remove ${u}` : `Switch to ${u}`}"
+                  @click="${() => this._handleUserClick(u)}"
+                  @keydown="${(e: KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      this._handleUserClick(u)
+                    }
+                  }}"
+                >
                   <td class="px-5 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900 dark:text-gray-100">${u}</div>
                   </td>

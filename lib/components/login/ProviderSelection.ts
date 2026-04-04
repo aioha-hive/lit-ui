@@ -63,8 +63,9 @@ export class ProviderSelection extends LitElement {
     const { name, icon, iconDark, loginBadge } = ProviderInfo[provider]
     return html`
       <li>
-        <a
-          class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow-sm hover:cursor-pointer dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+        <button
+          type="button"
+          class="flex items-center w-full p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow-sm hover:cursor-pointer dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
           @click="${() => this.onSelected?.(provider)}"
         >
           ${provider === Providers.ViewOnly
@@ -85,7 +86,7 @@ export class ProviderSelection extends LitElement {
               `}
           <span class="flex-1 ms-3 whitespace-nowrap">${name}</span>
           ${this._renderBadge(loginBadge)}
-        </a>
+        </button>
       </li>
     `
   }
@@ -97,7 +98,8 @@ export class ProviderSelection extends LitElement {
 
     const { name, icon, iconDark } = ProviderInfo[provider]
     return html`
-      <a
+      <button
+        type="button"
         class="flex flex-col items-center w-34 p-6 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow-sm hover:cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
         @click="${() => this.onSelected?.(provider)}"
       >
@@ -118,7 +120,7 @@ export class ProviderSelection extends LitElement {
               </svg>
             `}
         <span class="mt-4 text-base font-bold dark:text-white whitespace-nowrap">${name}</span>
-      </a>
+      </button>
     `
   }
 

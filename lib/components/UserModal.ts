@@ -59,7 +59,7 @@ export class UserModal extends LitElement {
             src="${this.imageServer}/u/${this._user}/avatar"
             alt="${this._user}'s avatar"
           />
-          <h3 class="text-lg font-semibold my-2 text-gray-900 dark:text-white">${this._user}</h3>
+          <h3 id="aioha-modal-title" class="text-lg font-semibold my-2 text-gray-900 dark:text-white">${this._user}</h3>
         </div>
         <div class="flex flex-col rounded-md shadow-xs mx-auto w-full" role="group">
           <button

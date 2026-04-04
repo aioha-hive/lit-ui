@@ -85,6 +85,12 @@ export class AiohaModal extends LitElement {
     e.stopPropagation()
   }
 
+  private _handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      this._onClose()
+    }
+  }
+
   private _handleSelectUser = (newUser: string) => {
     if (newUser !== this._user) {
       this._aioha.switchUser(newUser)
@@ -111,9 +117,12 @@ export class AiohaModal extends LitElement {
       <div class="${!this.lightMode ? 'dark' : ''}">
         <div
           id="aioha-modal"
-          tabindex="-1"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="aioha-modal-title"
           class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full bg-black/60"
           @mousedown="${this._onClose}"
+          @keydown="${this._handleKeyDown}"
         >
           <div class="relative p-4 ${maxWClass} max-h-full">
             <div

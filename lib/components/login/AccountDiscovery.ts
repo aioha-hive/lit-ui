@@ -142,7 +142,16 @@ export class AccountDiscovery extends LitElement {
                       ([username, auths]) => html`
                         <tr
                           class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
+                          role="button"
+                          tabindex="0"
+                          aria-label="Login as ${username}"
                           @click="${() => this._userSelected(username)}"
+                          @keydown="${(e: KeyboardEvent) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              this._userSelected(username)
+                            }
+                          }}"
                         >
                           <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100">${username}</div>

@@ -43,6 +43,7 @@ export class UsernameInput extends LitElement {
     return html`
       <div class="mb-3">${BackButton(() => this.onPrevious?.())}</div>
       <div class="inline-flex flex-row gap-1.5 w-full">
+        <label for="small-input" class="sr-only">Hive Username</label>
         <input
           type="text"
           id="small-input"

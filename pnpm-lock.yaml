@@ -11,6 +11,9 @@ importers:
       '@aioha/providers':
         specifier: ^1.8.2
         version: 1.8.2(@aioha/aioha@1.8.0(webextension-polyfill@0.12.0))(@lit/context@1.1.6)(lit@3.3.2)
+      i18next:
+        specifier: ^26.0.3
+        version: 26.0.3(typescript@5.9.3)
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
@@ -78,6 +81,10 @@ packages:
 
   '@aioha/tx-digest@2.0.1':
     resolution: {integrity: sha512-fl2xm58YB/ZvzN9Pb6hJfhXlknpoq3EYXHD8QJ5Xn6O6w8arkxOUWuYEGD82lZnFFsZsMfQvniExrrvnpvgI1A==}
+
+  '@babel/runtime@7.29.2':
+    resolution: {integrity: sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g==}
+    engines: {node: '>=6.9.0'}
 
   '@ecency/bytebuffer@6.0.0':
     resolution: {integrity: sha512-rGPjzD7a7cPtMHjpJEtLMt/RmqX8XK25tN5qjuu9iaDMK/Ril86CecU5DN/TXEMUQMY1p6b2cVvKBLTdFMr2DA==}
@@ -985,6 +992,14 @@ packages:
   https@1.0.0:
     resolution: {integrity: sha512-4EC57ddXrkaF0x83Oj8sM6SLQHAWXw90Skqu2M4AEWENZ3F02dFJE/GARA8igO79tcgYqGrD7ae4f5L3um2lgg==}
 
+  i18next@26.0.3:
+    resolution: {integrity: sha512-1571kXINxHKY7LksWp8wP+zP0YqHSSpl/OW0Y0owFEf2H3s8gCAffWaZivcz14rMkOvn3R/psiQxVsR9t2Nafg==}
+    peerDependencies:
+      typescript: ^5 || ^6
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
@@ -1477,6 +1492,8 @@ snapshots:
   '@aioha/tx-digest@2.0.1':
     dependencies:
       bs58: 6.0.0
+
+  '@babel/runtime@7.29.2': {}
 
   '@ecency/bytebuffer@6.0.0':
     dependencies:
@@ -2331,6 +2348,12 @@ snapshots:
       minimalistic-crypto-utils: 1.0.1
 
   https@1.0.0: {}
+
+  i18next@26.0.3(typescript@5.9.3):
+    dependencies:
+      '@babel/runtime': 7.29.2
+    optionalDependencies:
+      typescript: 5.9.3
 
   inherits@2.0.4: {}
 

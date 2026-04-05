@@ -5,6 +5,8 @@ import { AiohaCtx } from '@aioha/providers/lit'
 import type { Aioha } from '@aioha/aioha'
 import { Providers } from '@aioha/aioha'
 import type { DiscoverOptions, LoginOptions, LoginResult } from '@aioha/aioha/build/types.js'
+import type { i18n as I18nInstance } from 'i18next'
+import { I18nCtx } from '../i18n.js'
 import type { Arrangement } from './login/ProviderSelection.js'
 import type { DiscUserAuth } from './login/AccountDiscovery.js'
 import { ErrorAlert } from './login/ErrorAlert.js'
@@ -46,6 +48,9 @@ export class LoginModal extends LitElement {
 
   @consume({ context: AiohaCtx })
   private _aioha!: Aioha
+
+  @consume({ context: I18nCtx, subscribe: true })
+  private _i18n!: I18nInstance
 
   @state()
   private _page = 0
@@ -148,7 +153,7 @@ export class LoginModal extends LitElement {
           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
           @click="${this.onClose}"
         >
-          ${CloseIcon()}
+          ${CloseIcon(this._i18n.t('closeModal'))}
         </button>
       </div>
       <div class="p-4 md:p-5">

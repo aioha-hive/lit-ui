@@ -1,10 +1,12 @@
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { consume } from '@lit/context'
+import { consume, provide } from '@lit/context'
 import { type AiohaProvider, AiohaCtx, UserCtx, OtherUsersCtx } from '@aioha/providers/lit'
 import type { Aioha, PersistentLoginProvs, Providers } from '@aioha/aioha'
 import type { DiscoverOptions, LoginOptions, LoginResult } from '@aioha/aioha/build/types.js'
+import type { i18n as I18nInstance } from 'i18next'
 import { styles } from '../styles.js'
+import { i18n, I18nCtx } from '../i18n.js'
 import type { Arrangement } from './login/ProviderSelection.js'
 import './LoginModal.js'
 import './UserModal.js'
@@ -42,6 +44,9 @@ export class AiohaModal extends LitElement {
   @property({ type: String })
   explorerUrl = 'https://hivehub.dev'
 
+  @property({ type: String })
+  language = 'en'
+
   @property({ attribute: false })
   onLogin?: (result: LoginResult) => any
 
@@ -57,6 +62,10 @@ export class AiohaModal extends LitElement {
   @consume({ context: OtherUsersCtx, subscribe: true })
   private _otherUsers!: PersistentLoginProvs
 
+  @provide({ context: I18nCtx })
+  //@ts-ignore
+  private _i18n: I18nInstance = i18n
+
   @state()
   private _switchingUser = false
 
@@ -65,8 +74,16 @@ export class AiohaModal extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
+    i18n.changeLanguage(this.language)
     const isInactive = Object.keys(this._otherUsers).length > 0 && !this._aioha.isLoggedIn()
     this._switchingUser = isInactive
+  }
+
+  updated(changedProperties: Map<string, unknown>) {
+    if (changedProperties.has('language')) {
+      i18n.changeLanguage(this.language)
+      this.requestUpdate()
+    }
   }
 
   get _isInactive() {
@@ -143,7 +160,7 @@ export class AiohaModal extends LitElement {
                       `
                     : html`
                         <login-modal
-                          loginTitle="Add Account"
+                          loginTitle="${i18n.t('addAccount')}"
                           .loginHelpUrl="${this.loginHelpUrl}"
                           .loginOptions="${this.loginOptions}"
                           .discOptions="${this.discOptions}"
@@ -206,6 +223,7 @@ interface InitAiohaModalOptions {
   arrangement?: Arrangement
   imageServer?: string
   explorerUrl?: string
+  language?: string
   onLogin?: (result: LoginResult) => any
   onClose?: () => any
 }
@@ -224,6 +242,7 @@ export const initModal = (
     arrangement = 'list',
     imageServer = 'https://images.hive.blog',
     explorerUrl = 'https://hivehub.dev',
+    language = 'en',
     onLogin,
     onClose
   }: InitAiohaModalOptions
@@ -243,6 +262,7 @@ export const initModal = (
   modal.arrangement = arrangement
   modal.imageServer = imageServer
   modal.explorerUrl = explorerUrl
+  modal.language = language
   modal.onLogin = onLogin
   modal.onClose = onClose
   provider.appendChild(modal)

@@ -1,5 +1,8 @@
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
+import { consume } from '@lit/context'
+import type { i18n as I18nInstance } from 'i18next'
+import { I18nCtx } from '../../i18n.js'
 import { BackButton } from './BackButton.js'
 import { SpinningIcon } from '../Icons.js'
 
@@ -10,6 +13,9 @@ export class UsernameInput extends LitElement {
 
   @property({ attribute: false })
   onNext?: (username: string) => Promise<any>
+
+  @consume({ context: I18nCtx, subscribe: true })
+  private _i18n!: I18nInstance
 
   @state()
   private _username = ''
@@ -41,14 +47,14 @@ export class UsernameInput extends LitElement {
 
   render() {
     return html`
-      <div class="mb-3">${BackButton(() => this.onPrevious?.())}</div>
+      <div class="mb-3">${BackButton(() => this.onPrevious?.(), this._i18n.t('back'))}</div>
       <div class="inline-flex flex-row gap-1.5 w-full">
-        <label for="small-input" class="sr-only">Hive Username</label>
+        <label for="small-input" class="sr-only">${this._i18n.t('usernameLabel')}</label>
         <input
           type="text"
           id="small-input"
           class="bg-gray-50 border border-gray-300 text-gray-900 h-auto text-sm rounded-lg focus:outline-hidden focus:border-gray-900 grow p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white"
-          placeholder="Enter Hive Username"
+          placeholder="${this._i18n.t('usernamePlaceholder')}"
           autocapitalize="off"
           .value="${this._username}"
           @input="${this._handleInput}"
@@ -59,7 +65,7 @@ export class UsernameInput extends LitElement {
           type="button"
           class="text-gray-900 bg-white border border-gray-300 focus:outline-hidden hover:bg-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 items-center flex-none dark:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-500 dark:hover:border-gray-500 cursor-pointer"
           @click="${this._proceed}"
-          aria-label="Proceed"
+          aria-label="${this._i18n.t('proceed')}"
           ?disabled="${this._inProgress}"
         >
           ${this._inProgress

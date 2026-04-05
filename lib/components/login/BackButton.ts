@@ -1,6 +1,6 @@
 import { html } from 'lit'
 
-export const BackButton = (onPrevious: () => void) => {
+export const BackButton = (onPrevious: () => void, label = 'Back') => {
   return html`
     <button
       type="button"
@@ -16,7 +16,7 @@ export const BackButton = (onPrevious: () => void) => {
       >
         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7" />
       </svg>
-      Back
+      ${label}
     </button>
   `
 }

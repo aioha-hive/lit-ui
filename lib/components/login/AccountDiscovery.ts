@@ -4,6 +4,8 @@ import { consume } from '@lit/context'
 import { AiohaCtx } from '@aioha/providers/lit'
 import type { Aioha, Providers } from '@aioha/aioha'
 import type { DiscoverOptions } from '@aioha/aioha/build/types.js'
+import type { i18n as I18nInstance } from 'i18next'
+import { I18nCtx } from '../../i18n.js'
 import { ErrorAlert } from './ErrorAlert.js'
 import { BackButton } from './BackButton.js'
 import { SpinningIcon } from '../Icons.js'
@@ -30,6 +32,9 @@ export class AccountDiscovery extends LitElement {
 
   @consume({ context: AiohaCtx })
   private _aioha!: Aioha
+
+  @consume({ context: I18nCtx, subscribe: true })
+  private _i18n!: I18nInstance
 
   @state()
   private _completed = false
@@ -124,14 +129,14 @@ export class AccountDiscovery extends LitElement {
               d="M6 15h12M6 6h12m-6 12h.01M7 21h10a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1Z"
             />
           </svg>
-          <div class="text-lg my-3 text-gray-900 dark:text-gray-100 text-center">Please approve login request on the device.</div>
+          <div class="text-lg my-3 text-gray-900 dark:text-gray-100 text-center">${this._i18n.t('deviceApproval')}</div>
         </div>
       `
     }
 
     return html`
       <div class="flex-col gap-3">
-        <div class="mb-3 w-full">${BackButton(() => this.onPrevious?.())}</div>
+        <div class="mb-3 w-full">${BackButton(() => this.onPrevious?.(), this._i18n.t('back'))}</div>
         ${this._error ? ErrorAlert(this._error) : ''}
         ${Object.keys(this._discovered).length > 0
           ? html`
@@ -144,7 +149,7 @@ export class AccountDiscovery extends LitElement {
                           class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
                           role="button"
                           tabindex="0"
-                          aria-label="Login as ${username}"
+                          aria-label="${this._i18n.t('loginAsUser', { username })}"
                           @click="${() => this._userSelected(username)}"
                           @keydown="${(e: KeyboardEvent) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -202,7 +207,7 @@ export class AccountDiscovery extends LitElement {
                 @click="${this._handleStop}"
                 ?disabled="${this._count === 0}"
               >
-                ${SpinningIcon(5)}Stop
+                ${SpinningIcon(5)}${this._i18n.t('stop')}
               </button>
             `
           : ''}

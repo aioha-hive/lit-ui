@@ -4,6 +4,8 @@ import { consume } from '@lit/context'
 import { AiohaCtx } from '@aioha/providers/lit'
 import type { Aioha } from '@aioha/aioha'
 import { Providers } from '@aioha/aioha'
+import type { i18n as I18nInstance } from 'i18next'
+import { I18nCtx } from '../../i18n.js'
 import { ProviderInfo } from '../ProviderInfo.js'
 import { CloseIcon, EyeIcon } from '../Icons.js'
 
@@ -40,8 +42,23 @@ export class ProviderSelection extends LitElement {
   @consume({ context: AiohaCtx })
   private _aioha!: Aioha
 
+  @consume({ context: I18nCtx, subscribe: true })
+  private _i18n!: I18nInstance
+
   protected createRenderRoot(): HTMLElement | DocumentFragment {
     return this
+  }
+
+  private _getProviderName(provider: Providers): string {
+    if (provider === Providers.ViewOnly) return this._i18n.t('providerViewOnly')
+    if (provider === Providers.Custom) return this._i18n.t('providerOtherWallet')
+    return ProviderInfo[provider].name
+  }
+
+  private _getProviderBadge(provider: Providers): string | undefined {
+    if (provider === Providers.Keychain) return this._i18n.t('badgePopular')
+    if (provider === Providers.MetaMaskSnap) return this._i18n.t('badgeHiveSnap')
+    return ProviderInfo[provider].loginBadge
   }
 
   private _renderBadge(label?: string) {
@@ -60,7 +77,9 @@ export class ProviderSelection extends LitElement {
       return html``
     }
 
-    const { name, icon, iconDark, loginBadge } = ProviderInfo[provider]
+    const { icon, iconDark } = ProviderInfo[provider]
+    const name = this._getProviderName(provider)
+    const badge = this._getProviderBadge(provider)
     return html`
       <li>
         <button
@@ -85,7 +104,7 @@ export class ProviderSelection extends LitElement {
                 </svg>
               `}
           <span class="flex-1 ms-3 whitespace-nowrap">${name}</span>
-          ${this._renderBadge(loginBadge)}
+          ${this._renderBadge(badge)}
         </button>
       </li>
     `
@@ -96,7 +115,8 @@ export class ProviderSelection extends LitElement {
       return html``
     }
 
-    const { name, icon, iconDark } = ProviderInfo[provider]
+    const { icon, iconDark } = ProviderInfo[provider]
+    const name = this._getProviderName(provider)
     return html`
       <button
         type="button"
@@ -126,7 +146,7 @@ export class ProviderSelection extends LitElement {
 
   render() {
     return html`
-      <p class="text-sm font-normal text-gray-500 dark:text-gray-300">Connect with one of our available Hive wallet providers.</p>
+      <p class="text-sm font-normal text-gray-500 dark:text-gray-300">${this._i18n.t('connectInstruction')}</p>
       ${this.arrangement === 'list'
         ? html`
             <ul class="mt-4 mb-2 space-y-3">
@@ -154,7 +174,7 @@ export class ProviderSelection extends LitElement {
                   d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
-              Need help connecting a wallet?
+              ${this._i18n.t('helpLinkText')}
             </a>
           `
         : ''}
@@ -165,7 +185,7 @@ export class ProviderSelection extends LitElement {
               class="flex gap-2 items-center justify-center my-3 ml-auto mr-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
               @click="${this.onCancel}"
             >
-              ${CloseIcon('Cancel button')} Cancel
+              ${CloseIcon(this._i18n.t('cancel'))} ${this._i18n.t('cancel')}
             </button>
           `
         : ''}

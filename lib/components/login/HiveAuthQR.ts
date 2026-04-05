@@ -1,5 +1,8 @@
 import { LitElement, html, type PropertyValues } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { consume } from '@lit/context'
+import type { i18n as I18nInstance } from 'i18next'
+import { I18nCtx } from '../../i18n.js'
 import QRCode from 'qrcode'
 
 @customElement('hive-auth-qr')
@@ -9,6 +12,9 @@ export class HiveAuthQR extends LitElement {
 
   @property({ attribute: false })
   cancel?: () => void
+
+  @consume({ context: I18nCtx, subscribe: true })
+  private _i18n!: I18nInstance
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
     return this
@@ -50,11 +56,11 @@ export class HiveAuthQR extends LitElement {
   render() {
     return html`
       <p class="text-sm font-normal max-w-93.75 text-gray-500 dark:text-gray-300">
-        Scan the QR code using a HiveAuth-compatible mobile app.
+        ${this._i18n.t('hiveAuthInstruction')}
       </p>
 
       <div class="bg-white p-4 w-64 aspect-square mx-auto my-5">
-        <a href="${this.payload}" target="_blank" rel="noopener noreferrer" aria-label="Open HiveAuth payload link">
+        <a href="${this.payload}" target="_blank" rel="noopener noreferrer" aria-label="${this._i18n.t('openHiveAuthLink')}">
           <div class="h-full w-full flex items-center justify-center">
             <canvas></canvas>
           </div>
@@ -67,7 +73,7 @@ export class HiveAuthQR extends LitElement {
           class="text-gray-900 bg-white border border-gray-300 focus:outline-hidden hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 cursor-pointer"
           @click="${this._handleCancel}"
         >
-          Cancel
+          ${this._i18n.t('cancel')}
         </button>
       </div>
     `

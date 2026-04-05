@@ -23,6 +23,6 @@ export const RightAngledArrow = (w = 7) => {
   `
 }
 
-export const RmRowIcon = (w = 7) => {
-  return html` <td class="px-1 py-4 ${sizes[w]} whitespace-nowrap text-gray-800 dark:text-gray-100">${CloseIcon('Remove account')}</td> `
+export const RmRowIcon = (w = 7, srDesc = 'Remove account') => {
+  return html` <td class="px-1 py-4 ${sizes[w]} whitespace-nowrap text-gray-800 dark:text-gray-100">${CloseIcon(srDesc)}</td> `
 }

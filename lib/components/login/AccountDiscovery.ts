@@ -4,8 +4,7 @@ import { consume } from '@lit/context'
 import { AiohaCtx } from '@aioha/providers/lit'
 import type { Aioha, Providers } from '@aioha/aioha'
 import type { DiscoverOptions } from '@aioha/aioha/build/types.js'
-import type { i18n as I18nInstance } from 'i18next'
-import { I18nCtx } from '../../i18n.js'
+import { MessagesController } from '../../messages-controller.js'
 import { ErrorAlert } from './ErrorAlert.js'
 import { BackButton } from './BackButton.js'
 import { SpinningIcon } from '../Icons.js'
@@ -33,8 +32,7 @@ export class AccountDiscovery extends LitElement {
   @consume({ context: AiohaCtx })
   private _aioha!: Aioha
 
-  @consume({ context: I18nCtx, subscribe: true })
-  private _i18n!: I18nInstance
+  private _messages = new MessagesController(this)
 
   @state()
   private _completed = false
@@ -115,7 +113,7 @@ export class AccountDiscovery extends LitElement {
       return html`
         <div class="flex-col gap-20 my-3">
           <svg
-            class="w-20 h-20 ml-auto mr-auto text-gray-900 dark:text-gray-100"
+            class="w-20 h-20 mx-auto text-gray-900 dark:text-gray-100"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -129,14 +127,14 @@ export class AccountDiscovery extends LitElement {
               d="M6 15h12M6 6h12m-6 12h.01M7 21h10a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1Z"
             />
           </svg>
-          <div class="text-lg my-3 text-gray-900 dark:text-gray-100 text-center">${this._i18n.t('deviceApproval')}</div>
+          <div class="text-lg my-3 text-gray-900 dark:text-gray-100 text-center">${this._messages.t('auth.device.approval')}</div>
         </div>
       `
     }
 
     return html`
       <div class="flex-col gap-3">
-        <div class="mb-3 w-full">${BackButton(() => this.onPrevious?.(), this._i18n.t('back'))}</div>
+        <div class="mb-3 w-full">${BackButton(() => this.onPrevious?.(), this._messages.t('action.back'))}</div>
         ${this._error ? ErrorAlert(this._error) : ''}
         ${Object.keys(this._discovered).length > 0
           ? html`
@@ -149,7 +147,7 @@ export class AccountDiscovery extends LitElement {
                           class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
                           role="button"
                           tabindex="0"
-                          aria-label="${this._i18n.t('loginAsUser', { username })}"
+                          aria-label="${this._messages.t('user.loginAs', { username })}"
                           @click="${() => this._userSelected(username)}"
                           @keydown="${(e: KeyboardEvent) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -174,9 +172,9 @@ export class AccountDiscovery extends LitElement {
                               )}
                             </div>
                           </td>
-                          <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <td class="px-3 py-4 whitespace-nowrap text-end text-sm font-medium">
                             <svg
-                              class="w-5 h-5 text-gray-400 dark:text-gray-400 ml-auto"
+                              class="w-5 h-5 text-gray-400 dark:text-gray-400 ms-auto rtl:-scale-x-100"
                               aria-hidden="true"
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -203,11 +201,11 @@ export class AccountDiscovery extends LitElement {
           ? html`
               <button
                 type="button"
-                class="flex gap-2 items-center justify-center mt-3 ml-auto mr-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
+                class="flex gap-2 items-center justify-center mt-3 mx-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
                 @click="${this._handleStop}"
                 ?disabled="${this._count === 0}"
               >
-                ${SpinningIcon(5)}${this._i18n.t('stop')}
+                ${SpinningIcon(5)}${this._messages.t('action.stop')}
               </button>
             `
           : ''}

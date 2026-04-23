@@ -1,25 +1,13 @@
-import i18next from 'i18next'
 import { createContext } from '@lit/context'
-import type { i18n as I18nInstance } from 'i18next'
-import en from './locales/en.js'
+import { createDefaultMessages, type Catalog, type DefaultMessages, type Messages } from '@aioha/i18n-keys'
 
-export const I18nCtx = createContext<I18nInstance>(Symbol.for('AiohaI18n'))
+export { createDefaultMessages } from '@aioha/i18n-keys'
+export type { Messages, DefaultMessages, MessageId, Catalog, MessageVars, Direction } from '@aioha/i18n-keys'
 
-export const i18n: I18nInstance = i18next.createInstance()
+export const defaultMessages: DefaultMessages = createDefaultMessages({ initialLocale: 'en' })
 
-i18n.init({
-  lng: 'en',
-  fallbackLng: 'en',
-  ns: ['aioha'],
-  defaultNS: 'aioha',
-  resources: {
-    en: { aioha: en }
-  },
-  interpolation: {
-    escapeValue: false
-  }
-})
+export const MessagesCtx = createContext<Messages>(Symbol.for('AiohaMessages'))
 
-export const addTranslations = (lng: string, resources: Partial<typeof en>) => {
-  i18n.addResourceBundle(lng, 'aioha', resources, true, true)
+export function loadLocale(locale: string, catalog: Partial<Catalog>): void {
+  defaultMessages.addCatalog(locale, catalog)
 }

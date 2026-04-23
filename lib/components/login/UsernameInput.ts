@@ -1,8 +1,6 @@
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { consume } from '@lit/context'
-import type { i18n as I18nInstance } from 'i18next'
-import { I18nCtx } from '../../i18n.js'
+import { MessagesController } from '../../messages-controller.js'
 import { BackButton } from './BackButton.js'
 import { SpinningIcon } from '../Icons.js'
 
@@ -14,8 +12,7 @@ export class UsernameInput extends LitElement {
   @property({ attribute: false })
   onNext?: (username: string) => Promise<any>
 
-  @consume({ context: I18nCtx, subscribe: true })
-  private _i18n!: I18nInstance
+  private _messages = new MessagesController(this)
 
   @state()
   private _username = ''
@@ -47,14 +44,14 @@ export class UsernameInput extends LitElement {
 
   render() {
     return html`
-      <div class="mb-3">${BackButton(() => this.onPrevious?.(), this._i18n.t('back'))}</div>
+      <div class="mb-3">${BackButton(() => this.onPrevious?.(), this._messages.t('action.back'))}</div>
       <div class="inline-flex flex-row gap-1.5 w-full">
-        <label for="small-input" class="sr-only">${this._i18n.t('usernameLabel')}</label>
+        <label for="small-input" class="sr-only">${this._messages.t('auth.username.label')}</label>
         <input
           type="text"
           id="small-input"
           class="bg-gray-50 border border-gray-300 text-gray-900 h-auto text-sm rounded-lg focus:outline-hidden focus:border-gray-900 grow p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white"
-          placeholder="${this._i18n.t('usernamePlaceholder')}"
+          placeholder="${this._messages.t('auth.username.placeholder')}"
           autocapitalize="off"
           .value="${this._username}"
           @input="${this._handleInput}"
@@ -65,14 +62,14 @@ export class UsernameInput extends LitElement {
           type="button"
           class="text-gray-900 bg-white border border-gray-300 focus:outline-hidden hover:bg-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 items-center flex-none dark:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-500 dark:hover:border-gray-500 cursor-pointer"
           @click="${this._proceed}"
-          aria-label="${this._i18n.t('proceed')}"
+          aria-label="${this._messages.t('action.proceed')}"
           ?disabled="${this._inProgress}"
         >
           ${this._inProgress
             ? SpinningIcon()
             : html`
                 <svg
-                  class="w-6 h-6 text-gray-800 dark:text-white"
+                  class="w-6 h-6 text-gray-800 dark:text-white rtl:-scale-x-100"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

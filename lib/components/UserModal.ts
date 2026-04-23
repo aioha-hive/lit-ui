@@ -3,8 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { consume } from '@lit/context'
 import { AiohaCtx, UserCtx, OtherUsersCtx } from '@aioha/providers/lit'
 import type { Aioha, PersistentLoginProvs } from '@aioha/aioha'
-import type { i18n as I18nInstance } from 'i18next'
-import { I18nCtx } from '../i18n.js'
+import { MessagesController } from '../messages-controller.js'
 import { CloseIcon } from './Icons.js'
 
 @customElement('user-modal')
@@ -30,8 +29,7 @@ export class UserModal extends LitElement {
   @consume({ context: OtherUsersCtx, subscribe: true })
   private _otherUsers!: PersistentLoginProvs
 
-  @consume({ context: I18nCtx, subscribe: true })
-  private _i18n!: I18nInstance
+  private _messages = new MessagesController(this)
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
     return this
@@ -53,16 +51,16 @@ export class UserModal extends LitElement {
         type="button"
         class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
         @click="${this.onClose}"
-        aria-label="Close"
+        aria-label="${this._messages.t('modal.close')}"
       >
-        ${CloseIcon(this._i18n.t('closeModal'))}
+        ${CloseIcon(this._messages.t('modal.close'))}
       </button>
       <div class="p-4 md:p-5 flex flex-col place-content-center text-center">
         <div class="my-3">
           <img
             class="w-16 h-16 mx-auto rounded-full"
             src="${this.imageServer}/u/${this._user}/avatar"
-            alt="${this._i18n.t('userAvatar', { user: this._user })}"
+            alt="${this._messages.t('user.avatarAlt', { user: this._user })}"
           />
           <h3 id="aioha-modal-title" class="text-lg font-semibold my-2 text-gray-900 dark:text-white">${this._user}</h3>
         </div>
@@ -72,21 +70,21 @@ export class UserModal extends LitElement {
             class="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500 rounded-t-lg"
             @click="${() => window.open(`${this.explorerUrl}/@${this._user}`)}"
           >
-            ${this._i18n.t('viewInExplorer')}
+            ${this._messages.t('user.viewExplorer')}
           </button>
           <button
             type="button"
             class="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500"
             @click="${this.onSwitchUser}"
           >
-            ${this._i18n.t('switchUser')}
+            ${this._messages.t('user.switch')}
           </button>
           <button
             type="button"
             class="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500 rounded-b-lg"
             @click="${this._handleLogout}"
           >
-            ${this._i18n.t('logout')}
+            ${this._messages.t('user.logout')}
           </button>
         </div>
       </div>

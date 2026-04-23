@@ -4,9 +4,8 @@ import { consume, provide } from '@lit/context'
 import { type AiohaProvider, AiohaCtx, UserCtx, OtherUsersCtx } from '@aioha/providers/lit'
 import type { Aioha, PersistentLoginProvs, Providers } from '@aioha/aioha'
 import type { DiscoverOptions, LoginOptions, LoginResult } from '@aioha/aioha/build/types.js'
-import type { i18n as I18nInstance } from 'i18next'
 import { styles } from '../styles.js'
-import { i18n, I18nCtx } from '../i18n.js'
+import { defaultMessages, MessagesCtx, type Messages } from '../i18n.js'
 import type { Arrangement } from './login/ProviderSelection.js'
 import './LoginModal.js'
 import './UserModal.js'
@@ -21,7 +20,7 @@ export class AiohaModal extends LitElement {
   lightMode = false
 
   @property({ type: String })
-  loginTitle: string = 'Connect Wallet'
+  loginTitle?: string
 
   @property({ type: String })
   loginHelpUrl?: string
@@ -47,6 +46,12 @@ export class AiohaModal extends LitElement {
   @property({ type: String })
   language = 'en'
 
+  @property({ type: String })
+  direction: 'ltr' | 'rtl' | 'auto' = 'auto'
+
+  @property({ attribute: false })
+  messages?: Messages
+
   @property({ attribute: false })
   onLogin?: (result: LoginResult) => any
 
@@ -62,9 +67,10 @@ export class AiohaModal extends LitElement {
   @consume({ context: OtherUsersCtx, subscribe: true })
   private _otherUsers!: PersistentLoginProvs
 
-  @provide({ context: I18nCtx })
-  //@ts-ignore
-  private _i18n: I18nInstance = i18n
+  @provide({ context: MessagesCtx })
+  private _messages: Messages = defaultMessages
+
+  private _unsubscribe?: () => void
 
   @state()
   private _switchingUser = false
@@ -74,14 +80,27 @@ export class AiohaModal extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    i18n.changeLanguage(this.language)
+    this._messages = this.messages ?? defaultMessages
+    this._messages.setLocale(this.language)
+    this._unsubscribe = this._messages.subscribe(() => this.requestUpdate())
     const isInactive = Object.keys(this._otherUsers).length > 0 && !this._aioha.isLoggedIn()
     this._switchingUser = isInactive
   }
 
+  disconnectedCallback() {
+    super.disconnectedCallback()
+    this._unsubscribe?.()
+  }
+
   updated(changedProperties: Map<string, unknown>) {
+    if (changedProperties.has('messages')) {
+      this._unsubscribe?.()
+      this._messages = this.messages ?? defaultMessages
+      this._messages.setLocale(this.language)
+      this._unsubscribe = this._messages.subscribe(() => this.requestUpdate())
+    }
     if (changedProperties.has('language')) {
-      i18n.changeLanguage(this.language)
+      this._messages.setLocale(this.language)
       this.requestUpdate()
     }
   }
@@ -123,6 +142,12 @@ export class AiohaModal extends LitElement {
     }
   }
 
+  private _resolvedDir(): 'ltr' | 'rtl' {
+    if (this.direction === 'ltr' || this.direction === 'rtl') return this.direction
+    if (typeof document !== 'undefined' && document.dir === 'rtl') return 'rtl'
+    return this._messages.getDir()
+  }
+
   render() {
     const maxWClass = this.arrangement === 'grid' ? 'md:max-w-xl max-w-md' : 'max-w-md'
 
@@ -131,13 +156,13 @@ export class AiohaModal extends LitElement {
     }
 
     return html`
-      <div class="${!this.lightMode ? 'dark' : ''}">
+      <div class="${!this.lightMode ? 'dark' : ''}" dir="${this._resolvedDir()}">
         <div
           id="aioha-modal"
           role="dialog"
           aria-modal="true"
           aria-labelledby="aioha-modal-title"
-          class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full bg-black/60"
+          class="overflow-y-auto overflow-x-hidden fixed top-0 inset-x-0 z-50 flex justify-center items-center w-full md:inset-0 h-full bg-black/60"
           @mousedown="${this._onClose}"
           @keydown="${this._handleKeyDown}"
         >
@@ -160,7 +185,7 @@ export class AiohaModal extends LitElement {
                       `
                     : html`
                         <login-modal
-                          loginTitle="${i18n.t('addAccount')}"
+                          loginTitle="${this._messages.t('user.addAccount')}"
                           .loginHelpUrl="${this.loginHelpUrl}"
                           .loginOptions="${this.loginOptions}"
                           .discOptions="${this.discOptions}"
@@ -224,6 +249,8 @@ interface InitAiohaModalOptions {
   imageServer?: string
   explorerUrl?: string
   language?: string
+  direction?: 'ltr' | 'rtl' | 'auto'
+  messages?: Messages
   onLogin?: (result: LoginResult) => any
   onClose?: () => any
 }
@@ -234,7 +261,7 @@ export const initModal = (
   {
     displayed = false,
     lightMode = false,
-    loginTitle = 'Connect Wallet',
+    loginTitle,
     loginHelpUrl,
     loginOptions,
     discOptions,
@@ -243,6 +270,8 @@ export const initModal = (
     imageServer = 'https://images.hive.blog',
     explorerUrl = 'https://hivehub.dev',
     language = 'en',
+    direction = 'auto',
+    messages,
     onLogin,
     onClose
   }: InitAiohaModalOptions
@@ -254,7 +283,7 @@ export const initModal = (
   const modal = document.createElement('aioha-modal')
   modal.displayed = displayed
   modal.lightMode = lightMode
-  modal.loginTitle = loginTitle
+  if (loginTitle !== undefined) modal.loginTitle = loginTitle
   modal.loginHelpUrl = loginHelpUrl
   modal.loginOptions = loginOptions
   modal.discOptions = discOptions
@@ -263,6 +292,8 @@ export const initModal = (
   modal.imageServer = imageServer
   modal.explorerUrl = explorerUrl
   modal.language = language
+  modal.direction = direction
+  modal.messages = messages
   modal.onLogin = onLogin
   modal.onClose = onClose
   provider.appendChild(modal)

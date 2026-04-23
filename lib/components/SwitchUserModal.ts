@@ -3,8 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { consume } from '@lit/context'
 import { AiohaCtx, UserCtx, ProviderCtx, OtherUsersCtx } from '@aioha/providers/lit'
 import type { Aioha, Providers, PersistentLoginProvs } from '@aioha/aioha'
-import type { i18n as I18nInstance } from 'i18next'
-import { I18nCtx } from '../i18n.js'
+import { MessagesController } from '../messages-controller.js'
 import { CloseIcon, PlusIcon, EditIcon } from './Icons.js'
 import { RightAngledArrow, RmRowIcon } from './TableUtils.js'
 import { ProviderInfo } from './ProviderInfo.js'
@@ -32,8 +31,7 @@ export class SwitchUserModal extends LitElement {
   @consume({ context: OtherUsersCtx, subscribe: true })
   private _otherUsers!: PersistentLoginProvs
 
-  @consume({ context: I18nCtx, subscribe: true })
-  private _i18n!: I18nInstance
+  private _messages = new MessagesController(this)
 
   @state()
   private _editing = false
@@ -68,13 +66,14 @@ export class SwitchUserModal extends LitElement {
   render() {
     return html`
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-        <h3 id="aioha-modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">${this._i18n.t('switchUser')}</h3>
+        <h3 id="aioha-modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">${this._messages.t('user.switch')}</h3>
         <button
           type="button"
           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
           @click="${this.onClose}"
+          aria-label="${this._messages.t('modal.close')}"
         >
-          ${CloseIcon(this._i18n.t('closeModal'))}
+          ${CloseIcon(this._messages.t('modal.close'))}
         </button>
       </div>
       <div class="w-full overflow-x-auto">
@@ -86,7 +85,7 @@ export class SwitchUserModal extends LitElement {
                     class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
                     role="button"
                     tabindex="0"
-                    aria-label="${this._editing ? this._i18n.t('removeUser', { user: this._user }) : this._i18n.t('switchToUser', { user: this._user })}"
+                    aria-label="${this._editing ? this._messages.t('user.removeConfirm', { user: this._user }) : this._messages.t('user.switchTo', { user: this._user })}"
                     @click="${() => this._handleUserClick(this._user!)}"
                     @keydown="${(e: KeyboardEvent) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -101,7 +100,7 @@ export class SwitchUserModal extends LitElement {
                     <td class="px-3 py-4 whitespace-nowrap">
                       ${this._renderBadge(this._provider ? ProviderInfo[this._provider].name : undefined)}
                     </td>
-                    ${this._editing ? RmRowIcon(12, this._i18n.t('removeAccount')) : RightAngledArrow(12)}
+                    ${this._editing ? RmRowIcon(12, this._messages.t('user.removeAccount')) : RightAngledArrow(12)}
                   </tr>
                 `
               : ''}
@@ -111,7 +110,7 @@ export class SwitchUserModal extends LitElement {
                   class="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
                   role="button"
                   tabindex="0"
-                  aria-label="${this._editing ? this._i18n.t('removeUser', { user: u }) : this._i18n.t('switchToUser', { user: u })}"
+                  aria-label="${this._editing ? this._messages.t('user.removeConfirm', { user: u }) : this._messages.t('user.switchTo', { user: u })}"
                   @click="${() => this._handleUserClick(u)}"
                   @keydown="${(e: KeyboardEvent) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -126,7 +125,7 @@ export class SwitchUserModal extends LitElement {
                   <td class="px-3 py-4 whitespace-nowrap">
                     ${this._renderBadge(this._otherUsers[u] ? ProviderInfo[this._otherUsers[u]].name : undefined)}
                   </td>
-                  ${this._editing ? RmRowIcon(12, this._i18n.t('removeAccount')) : RightAngledArrow(12)}
+                  ${this._editing ? RmRowIcon(12, this._messages.t('user.removeAccount')) : RightAngledArrow(12)}
                 </tr>
               `
             )}
@@ -142,7 +141,7 @@ export class SwitchUserModal extends LitElement {
                     this._editing = false
                   }}"
                 >
-                  ${this._i18n.t('done')}
+                  ${this._messages.t('action.done')}
                 </button>
               </div>
             `
@@ -150,19 +149,19 @@ export class SwitchUserModal extends LitElement {
               <div class="flex gap-2 my-5 mx-auto justify-center">
                 <button
                   type="button"
-                  class="flex gap-1 items-center justify-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm pl-3.5 pr-4 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
+                  class="flex gap-1 items-center justify-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm ps-3.5 pe-4 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
                   @click="${() => {
                     this._editing = true
                   }}"
                 >
-                  ${EditIcon()} ${this._i18n.t('edit')}
+                  ${EditIcon()} ${this._messages.t('action.edit')}
                 </button>
                 <button
                   type="button"
-                  class="flex gap-1 items-center justify-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm pl-3 pr-4 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
+                  class="flex gap-1 items-center justify-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm ps-3 pe-4 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
                   @click="${this.onAddAcc}"
                 >
-                  ${PlusIcon()} ${this._i18n.t('addAccountBtn')}
+                  ${PlusIcon()} ${this._messages.t('user.addAccountBtn')}
                 </button>
               </div>
             `}

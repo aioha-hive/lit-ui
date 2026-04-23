@@ -5,8 +5,7 @@ import { AiohaCtx } from '@aioha/providers/lit'
 import type { Aioha } from '@aioha/aioha'
 import { Providers } from '@aioha/aioha'
 import type { DiscoverOptions, LoginOptions, LoginResult } from '@aioha/aioha/build/types.js'
-import type { i18n as I18nInstance } from 'i18next'
-import { I18nCtx } from '../i18n.js'
+import { MessagesController } from '../messages-controller.js'
 import type { Arrangement } from './login/ProviderSelection.js'
 import type { DiscUserAuth } from './login/AccountDiscovery.js'
 import { ErrorAlert } from './login/ErrorAlert.js'
@@ -20,7 +19,7 @@ import './login/HiveAuthQR.js'
 @customElement('login-modal')
 export class LoginModal extends LitElement {
   @property({ type: String })
-  loginTitle = 'Connect Wallet'
+  loginTitle?: string
 
   @property({ type: String })
   loginHelpUrl?: string
@@ -49,8 +48,7 @@ export class LoginModal extends LitElement {
   @consume({ context: AiohaCtx })
   private _aioha!: Aioha
 
-  @consume({ context: I18nCtx, subscribe: true })
-  private _i18n!: I18nInstance
+  private _messages = new MessagesController(this)
 
   @state()
   private _page = 0
@@ -147,13 +145,14 @@ export class LoginModal extends LitElement {
   render() {
     return html`
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-        <h3 id="aioha-modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">${this.loginTitle}</h3>
+        <h3 id="aioha-modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">${this.loginTitle ?? this._messages.t('wallet.connect')}</h3>
         <button
           type="button"
           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
           @click="${this.onClose}"
+          aria-label="${this._messages.t('modal.close')}"
         >
-          ${CloseIcon(this._i18n.t('closeModal'))}
+          ${CloseIcon(this._messages.t('modal.close'))}
         </button>
       </div>
       <div class="p-4 md:p-5">

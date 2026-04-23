@@ -4,8 +4,7 @@ import { consume } from '@lit/context'
 import { AiohaCtx } from '@aioha/providers/lit'
 import type { Aioha } from '@aioha/aioha'
 import { Providers } from '@aioha/aioha'
-import type { i18n as I18nInstance } from 'i18next'
-import { I18nCtx } from '../../i18n.js'
+import { MessagesController } from '../../messages-controller.js'
 import { ProviderInfo } from '../ProviderInfo.js'
 import { CloseIcon, EyeIcon } from '../Icons.js'
 
@@ -42,22 +41,21 @@ export class ProviderSelection extends LitElement {
   @consume({ context: AiohaCtx })
   private _aioha!: Aioha
 
-  @consume({ context: I18nCtx, subscribe: true })
-  private _i18n!: I18nInstance
+  private _messages = new MessagesController(this)
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
     return this
   }
 
   private _getProviderName(provider: Providers): string {
-    if (provider === Providers.ViewOnly) return this._i18n.t('providerViewOnly')
-    if (provider === Providers.Custom) return this._i18n.t('providerOtherWallet')
+    if (provider === Providers.ViewOnly) return this._messages.t('wallet.provider.viewOnly')
+    if (provider === Providers.Custom) return this._messages.t('wallet.provider.other')
     return ProviderInfo[provider].name
   }
 
   private _getProviderBadge(provider: Providers): string | undefined {
-    if (provider === Providers.Keychain) return this._i18n.t('badgePopular')
-    if (provider === Providers.MetaMaskSnap) return this._i18n.t('badgeHiveSnap')
+    if (provider === Providers.Keychain) return this._messages.t('wallet.badge.popular')
+    if (provider === Providers.MetaMaskSnap) return this._messages.t('wallet.badge.snap')
     return ProviderInfo[provider].loginBadge
   }
 
@@ -146,7 +144,7 @@ export class ProviderSelection extends LitElement {
 
   render() {
     return html`
-      <p class="text-sm font-normal text-gray-500 dark:text-gray-300">${this._i18n.t('connectInstruction')}</p>
+      <p class="text-sm font-normal text-gray-500 dark:text-gray-300">${this._messages.t('wallet.connectInstruction')}</p>
       ${this.arrangement === 'list'
         ? html`
             <ul class="mt-4 mb-2 space-y-3">
@@ -174,7 +172,7 @@ export class ProviderSelection extends LitElement {
                   d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
-              ${this._i18n.t('helpLinkText')}
+              ${this._messages.t('wallet.helpLink')}
             </a>
           `
         : ''}
@@ -182,10 +180,10 @@ export class ProviderSelection extends LitElement {
         ? html`
             <button
               type="button"
-              class="flex gap-2 items-center justify-center my-3 ml-auto mr-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
+              class="flex gap-2 items-center justify-center my-3 mx-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 enabled:hover:cursor-pointer disabled:hover:cursor-not-allowed"
               @click="${this.onCancel}"
             >
-              ${CloseIcon(this._i18n.t('cancel'))} ${this._i18n.t('cancel')}
+              ${CloseIcon(this._messages.t('action.cancel'))} ${this._messages.t('action.cancel')}
             </button>
           `
         : ''}

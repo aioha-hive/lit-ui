@@ -37,8 +37,8 @@
     "README.md"
   ],
   "dependencies": {
+    "@aioha/i18n-keys": "^1.0.0",
     "@aioha/providers": "^1.8.2",
-    "i18next": "^26.0.3",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {

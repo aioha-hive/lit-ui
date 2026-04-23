@@ -1,8 +1,6 @@
 import { LitElement, html, type PropertyValues } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { consume } from '@lit/context'
-import type { i18n as I18nInstance } from 'i18next'
-import { I18nCtx } from '../../i18n.js'
+import { MessagesController } from '../../messages-controller.js'
 import QRCode from 'qrcode'
 
 @customElement('hive-auth-qr')
@@ -13,8 +11,7 @@ export class HiveAuthQR extends LitElement {
   @property({ attribute: false })
   cancel?: () => void
 
-  @consume({ context: I18nCtx, subscribe: true })
-  private _i18n!: I18nInstance
+  private _messages = new MessagesController(this)
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
     return this
@@ -31,8 +28,6 @@ export class HiveAuthQR extends LitElement {
   }
 
   private async _renderQRCode() {
-    // FIX: Find the canvas directly within the component's shadow root.
-    // this.renderRoot refers to the Shadow DOM of this element.
     const canvas = this.renderRoot?.querySelector('canvas') as HTMLCanvasElement
 
     if (!canvas || !this.payload) return
@@ -56,11 +51,11 @@ export class HiveAuthQR extends LitElement {
   render() {
     return html`
       <p class="text-sm font-normal max-w-93.75 text-gray-500 dark:text-gray-300">
-        ${this._i18n.t('hiveAuthInstruction')}
+        ${this._messages.t('auth.hiveauth.instruction')}
       </p>
 
       <div class="bg-white p-4 w-64 aspect-square mx-auto my-5">
-        <a href="${this.payload}" target="_blank" rel="noopener noreferrer" aria-label="${this._i18n.t('openHiveAuthLink')}">
+        <a href="${this.payload}" target="_blank" rel="noopener noreferrer" aria-label="${this._messages.t('auth.hiveauth.openLink')}">
           <div class="h-full w-full flex items-center justify-center">
             <canvas></canvas>
           </div>
@@ -73,7 +68,7 @@ export class HiveAuthQR extends LitElement {
           class="text-gray-900 bg-white border border-gray-300 focus:outline-hidden hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 cursor-pointer"
           @click="${this._handleCancel}"
         >
-          ${this._i18n.t('cancel')}
+          ${this._messages.t('action.cancel')}
         </button>
       </div>
     `

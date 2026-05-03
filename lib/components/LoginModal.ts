@@ -62,6 +62,14 @@ export class LoginModal extends LitElement {
   @state()
   private _hiveAuthPl?: { payload: string; cancel: () => void }
 
+  @state()
+  private _viewIn = true
+
+  @state()
+  private _dir: 'fwd' | 'back' = 'fwd'
+
+  private _prevPage = 0
+
   private _hiveAuthHandler?: (payload: string, _: any, cancel: () => void) => void
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
@@ -76,12 +84,26 @@ export class LoginModal extends LitElement {
       this._page = 2
     }
     this._aioha.on('hiveauth_login_request', this._hiveAuthHandler)
+    this._prevPage = this._page
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
     if (this._hiveAuthHandler) {
       this._aioha.off('hiveauth_login_request', this._hiveAuthHandler)
+    }
+  }
+
+  willUpdate(changedProperties: Map<string, unknown>) {
+    if (changedProperties.has('_page') && this._prevPage !== this._page) {
+      this._dir = this._page >= this._prevPage ? 'fwd' : 'back'
+      this._viewIn = false
+      this._prevPage = this._page
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this._viewIn = true
+        })
+      })
     }
   }
 
@@ -157,38 +179,48 @@ export class LoginModal extends LitElement {
       </div>
       <div class="p-4 md:p-5">
         ${this._error ? ErrorAlert(this._error) : ''}
-        ${this._page === 0
-          ? html`
-              <provider-selection
-                helpUrl="${this.loginHelpUrl || ''}"
-                .forceShow="${this.forceShowProviders}"
-                .arrangement="${this.arrangement}"
-                .onCancel="${this.onCancel}"
-                .onSelected="${this._handleProviderSelected}"
-              ></provider-selection>
-            `
-          : ''}
-        ${this._page === 1
-          ? html`
-              <username-input
-                .onPrevious="${this._handleUsernamePrevious}"
-                .onNext="${this._handleUsernameNext}"
-              ></username-input>
-            `
-          : ''}
-        ${this._page === 2 && this._hiveAuthPl
-          ? html` <hive-auth-qr payload="${this._hiveAuthPl.payload}" .cancel="${this._hiveAuthPl.cancel}"></hive-auth-qr> `
-          : ''}
-        ${this._page === 3 && this._chosenProvider
-          ? html`
-              <account-discovery
-                .provider="${this._chosenProvider}"
-                .options="${this.discOptions}"
-                .onPrevious="${this._handleDiscoveryPrevious}"
-                .onNext="${this._handleDiscoveryNext}"
-              ></account-discovery>
-            `
-          : ''}
+        <div
+          class="${`transition-[opacity,translate,scale] duration-200 motion-reduce:transition-none ease-[cubic-bezier(0.32,0.72,0,1)] ${
+            this._viewIn
+              ? 'opacity-100 translate-x-0'
+              : this._dir === 'fwd'
+                ? 'opacity-0 translate-x-2'
+                : 'opacity-0 -translate-x-2'
+          }`}"
+        >
+          ${this._page === 0
+            ? html`
+                <provider-selection
+                  helpUrl="${this.loginHelpUrl || ''}"
+                  .forceShow="${this.forceShowProviders}"
+                  .arrangement="${this.arrangement}"
+                  .onCancel="${this.onCancel}"
+                  .onSelected="${this._handleProviderSelected}"
+                ></provider-selection>
+              `
+            : ''}
+          ${this._page === 1
+            ? html`
+                <username-input
+                  .onPrevious="${this._handleUsernamePrevious}"
+                  .onNext="${this._handleUsernameNext}"
+                ></username-input>
+              `
+            : ''}
+          ${this._page === 2 && this._hiveAuthPl
+            ? html` <hive-auth-qr payload="${this._hiveAuthPl.payload}" .cancel="${this._hiveAuthPl.cancel}"></hive-auth-qr> `
+            : ''}
+          ${this._page === 3 && this._chosenProvider
+            ? html`
+                <account-discovery
+                  .provider="${this._chosenProvider}"
+                  .options="${this.discOptions}"
+                  .onPrevious="${this._handleDiscoveryPrevious}"
+                  .onNext="${this._handleDiscoveryNext}"
+                ></account-discovery>
+              `
+            : ''}
+        </div>
       </div>
     `
   }

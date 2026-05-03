@@ -11,6 +11,8 @@ import './LoginModal.js'
 import './UserModal.js'
 import './SwitchUserModal.js'
 
+const VIEW_ORDER: Record<string, number> = { login: 0, user: 1, switch: 2, add: 3 }
+
 @customElement('aioha-modal')
 export class AiohaModal extends LitElement {
   @property({ type: Boolean })
@@ -78,6 +80,40 @@ export class AiohaModal extends LitElement {
   @state()
   private _addingAcc = false
 
+  @state()
+  private _isMounted = false
+
+  @state()
+  private _isOpen = false
+
+  @state()
+  private _viewIn = true
+
+  @state()
+  private _innerWidth?: number
+
+  @state()
+  private _innerHeight?: number
+
+  @state()
+  private _sizeReady = false
+
+  @state()
+  private _dir: 'fwd' | 'back' = 'fwd'
+
+  private _closeTimer?: number
+  private _prevViewKey = ''
+  private _sizeObserver?: ResizeObserver
+  private _sizeInnerEl?: HTMLElement | null
+  private _sizeReadyTimer?: number
+
+  private get _viewKey(): string {
+    if (this._aioha.isLoggedIn() || Object.keys(this._otherUsers).length > 0) {
+      return this._switchingUser ? (this._addingAcc ? 'add' : 'switch') : 'user'
+    }
+    return 'login'
+  }
+
   connectedCallback() {
     super.connectedCallback()
     this._messages = this.messages ?? defaultMessages
@@ -85,11 +121,39 @@ export class AiohaModal extends LitElement {
     this._unsubscribe = this._messages.subscribe(() => this.requestUpdate())
     const isInactive = Object.keys(this._otherUsers).length > 0 && !this._aioha.isLoggedIn()
     this._switchingUser = isInactive
+    this._isMounted = this.displayed
+    if (this.displayed) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this._isOpen = true
+        })
+      })
+    }
+    this._prevViewKey = this._viewKey
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
+    clearTimeout(this._closeTimer)
+    clearTimeout(this._sizeReadyTimer)
+    this._sizeObserver?.disconnect()
+    this._sizeObserver = undefined
+    this._sizeInnerEl = undefined
     this._unsubscribe?.()
+  }
+
+  willUpdate(_changedProperties: Map<string, unknown>) {
+    const k = this._viewKey
+    if (this._prevViewKey && this._prevViewKey !== k) {
+      this._dir = (VIEW_ORDER[k] ?? 0) >= (VIEW_ORDER[this._prevViewKey] ?? 0) ? 'fwd' : 'back'
+      this._viewIn = false
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this._viewIn = true
+        })
+      })
+    }
+    this._prevViewKey = k
   }
 
   updated(changedProperties: Map<string, unknown>) {
@@ -102,6 +166,53 @@ export class AiohaModal extends LitElement {
     if (changedProperties.has('language')) {
       this._messages.setLocale(this.language)
       this.requestUpdate()
+    }
+    if (changedProperties.has('displayed')) {
+      if (this.displayed) {
+        clearTimeout(this._closeTimer)
+        this._isMounted = true
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this._isOpen = true
+          })
+        })
+      } else if (this._isMounted) {
+        this._isOpen = false
+        this._closeTimer = window.setTimeout(() => {
+          this._isMounted = false
+        }, 200)
+      }
+    }
+
+    if (this._isMounted) {
+      const inner = this.shadowRoot?.querySelector('.aioha-h-inner') as HTMLElement | null
+      if (inner && inner !== this._sizeInnerEl) {
+        this._sizeObserver?.disconnect()
+        clearTimeout(this._sizeReadyTimer)
+        this._sizeReady = false
+        this._sizeInnerEl = inner
+        this._sizeObserver = new ResizeObserver(() => {
+          if (this._sizeInnerEl) {
+            this._innerWidth = this._sizeInnerEl.offsetWidth
+            this._innerHeight = this._sizeInnerEl.offsetHeight
+          }
+        })
+        this._sizeObserver.observe(inner)
+        this._innerWidth = inner.offsetWidth
+        this._innerHeight = inner.offsetHeight
+        this._sizeReadyTimer = window.setTimeout(() => {
+          this._sizeReady = true
+        }, 200)
+      }
+    } else if (this._sizeInnerEl) {
+      this._sizeObserver?.disconnect()
+      this._sizeObserver = undefined
+      clearTimeout(this._sizeReadyTimer)
+      this._sizeReadyTimer = undefined
+      this._sizeReady = false
+      this._sizeInnerEl = undefined
+      this._innerWidth = undefined
+      this._innerHeight = undefined
     }
   }
 
@@ -151,9 +262,27 @@ export class AiohaModal extends LitElement {
   render() {
     const maxWClass = this.arrangement === 'grid' ? 'md:max-w-xl max-w-md' : 'max-w-md'
 
-    if (!this.displayed) {
+    if (!this._isMounted) {
       return html``
     }
+
+    const backdropCls = `overflow-y-auto overflow-x-hidden fixed top-0 inset-x-0 z-50 flex justify-center items-center w-full md:inset-0 h-full bg-black/60 transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
+      this._isOpen ? 'opacity-100' : 'opacity-0'
+    }`
+    const panelCls = `relative bg-white rounded-lg shadow-sm dark:bg-gray-700 transition-[opacity,translate,scale] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
+      this._isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2'
+    }`
+    const viewCls = `transition-[opacity,translate,scale] duration-200 motion-reduce:transition-none ease-[cubic-bezier(0.32,0.72,0,1)] ${
+      this._viewIn
+        ? 'opacity-100 translate-x-0'
+        : this._dir === 'fwd'
+          ? 'opacity-0 translate-x-2'
+          : 'opacity-0 -translate-x-2'
+    }`
+    const sizeStyle =
+      this._innerWidth !== undefined
+        ? `width: ${this._innerWidth}px;${this._innerHeight !== undefined ? ` height: ${this._innerHeight}px;` : ''}`
+        : ''
 
     return html`
       <div class="${!this.lightMode ? 'dark' : ''}" dir="${this._resolvedDir()}">
@@ -162,64 +291,74 @@ export class AiohaModal extends LitElement {
           role="dialog"
           aria-modal="true"
           aria-labelledby="aioha-modal-title"
-          class="overflow-y-auto overflow-x-hidden fixed top-0 inset-x-0 z-50 flex justify-center items-center w-full md:inset-0 h-full bg-black/60"
+          class="${backdropCls}"
           @mousedown="${this._onClose}"
           @keydown="${this._handleKeyDown}"
         >
           <div class="relative p-4 ${maxWClass} max-h-full">
-            <div
-              class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700 min-w-sm"
-              @mousedown="${this._handleModalMouseDown}"
-            >
-              ${this._aioha.isLoggedIn() || Object.keys(this._otherUsers).length > 0
-                ? this._switchingUser
-                  ? !this._addingAcc
-                    ? html`
-                        <switch-user-modal
-                          .onClose="${this._onClose}"
-                          .onSelect="${this._handleSelectUser}"
-                          .onAddAcc="${() => {
-                            this._addingAcc = true
-                          }}"
-                        ></switch-user-modal>
-                      `
+            <div class="${panelCls}" @mousedown="${this._handleModalMouseDown}">
+              <div
+                class="${`overflow-hidden ${
+                  this._sizeReady
+                    ? 'transition-[width,height] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none'
+                    : ''
+                }`}"
+                style="${sizeStyle}"
+              >
+                <div class="aioha-h-inner w-max min-w-sm">
+                  <div class="${viewCls}">
+                ${this._aioha.isLoggedIn() || Object.keys(this._otherUsers).length > 0
+                  ? this._switchingUser
+                    ? !this._addingAcc
+                      ? html`
+                          <switch-user-modal
+                            .onClose="${this._onClose}"
+                            .onSelect="${this._handleSelectUser}"
+                            .onAddAcc="${() => {
+                              this._addingAcc = true
+                            }}"
+                          ></switch-user-modal>
+                        `
+                      : html`
+                          <login-modal
+                            loginTitle="${this._messages.t('user.addAccount')}"
+                            .loginHelpUrl="${this.loginHelpUrl}"
+                            .loginOptions="${this.loginOptions}"
+                            .discOptions="${this.discOptions}"
+                            .arrangement="${this.arrangement}"
+                            .forceShowProviders="${this.forceShowProviders}"
+                            .onLogin="${this._handleLogin}"
+                            .onClose="${this._onClose}"
+                            .onCancel="${() => {
+                              this._addingAcc = false
+                            }}"
+                          ></login-modal>
+                        `
                     : html`
-                        <login-modal
-                          loginTitle="${this._messages.t('user.addAccount')}"
-                          .loginHelpUrl="${this.loginHelpUrl}"
-                          .loginOptions="${this.loginOptions}"
-                          .discOptions="${this.discOptions}"
-                          .arrangement="${this.arrangement}"
-                          .forceShowProviders="${this.forceShowProviders}"
-                          .onLogin="${this._handleLogin}"
+                        <user-modal
+                          imageServer="${this.imageServer}"
+                          explorerUrl="${this.explorerUrl}"
                           .onClose="${this._onClose}"
-                          .onCancel="${() => {
-                            this._addingAcc = false
+                          .onSwitchUser="${() => {
+                            this._switchingUser = true
                           }}"
-                        ></login-modal>
+                        ></user-modal>
                       `
                   : html`
-                      <user-modal
-                        imageServer="${this.imageServer}"
-                        explorerUrl="${this.explorerUrl}"
+                      <login-modal
+                        .loginTitle="${this.loginTitle}"
+                        .loginHelpUrl="${this.loginHelpUrl}"
+                        .loginOptions="${this.loginOptions}"
+                        .discOptions="${this.discOptions}"
+                        .arrangement="${this.arrangement}"
+                        .forceShowProviders="${this.forceShowProviders}"
+                        .onLogin="${this._handleLogin}"
                         .onClose="${this._onClose}"
-                        .onSwitchUser="${() => {
-                          this._switchingUser = true
-                        }}"
-                      ></user-modal>
-                    `
-                : html`
-                    <login-modal
-                      .loginTitle="${this.loginTitle}"
-                      .loginHelpUrl="${this.loginHelpUrl}"
-                      .loginOptions="${this.loginOptions}"
-                      .discOptions="${this.discOptions}"
-                      .arrangement="${this.arrangement}"
-                      .forceShowProviders="${this.forceShowProviders}"
-                      .onLogin="${this._handleLogin}"
-                      .onClose="${this._onClose}"
-                    ></login-modal>
-                  `}
+                      ></login-modal>
+                    `}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

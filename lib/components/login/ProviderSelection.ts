@@ -147,12 +147,12 @@ export class ProviderSelection extends LitElement {
       <p class="text-sm font-normal text-gray-500 dark:text-gray-300">${this._messages.t('wallet.connectInstruction')}</p>
       ${this.arrangement === 'list'
         ? html`
-            <ul class="mt-4 mb-2 space-y-3">
+            <ul class="aioha-stagger mt-4 mb-2 space-y-3">
               ${ProvidersSeq.map((p) => this._renderProviderBtnList(p, this.forceShow.includes(p)))}
             </ul>
           `
         : html`
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 mb-2">
+            <div class="aioha-stagger grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 mb-2">
               ${ProvidersSeq.map((p) => this._renderProviderBtnGrid(p, this.forceShow.includes(p)))}
             </div>
           `}

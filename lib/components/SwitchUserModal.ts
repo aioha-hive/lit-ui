@@ -78,7 +78,7 @@ export class SwitchUserModal extends LitElement {
       </div>
       <div class="w-full overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-          <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:divide-gray-600">
+          <tbody class="aioha-stagger bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:divide-gray-600">
             ${this._user
               ? html`
                   <tr

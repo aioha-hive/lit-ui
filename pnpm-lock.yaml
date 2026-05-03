@@ -9,18 +9,18 @@ importers:
   .:
     dependencies:
       '@aioha/i18n-keys':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
       '@aioha/providers':
-        specifier: ^1.8.2
-        version: 1.8.2(@aioha/aioha@1.8.0(webextension-polyfill@0.12.0))(@lit/context@1.1.6)(lit@3.3.2)
+        specifier: ^1.9.0-beta.3
+        version: 1.9.0-beta.3(@aioha/aioha@1.8.5(webextension-polyfill@0.12.0))(@lit/context@1.1.6)(lit@3.3.2)
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
     devDependencies:
       '@aioha/aioha':
-        specifier: ^1.8.0
-        version: 1.8.0(webextension-polyfill@0.12.0)
+        specifier: ^1.8.5
+        version: 1.8.5(webextension-polyfill@0.12.0)
       '@lit/context':
         specifier: ^1.1.6
         version: 1.1.6
@@ -51,27 +51,38 @@ importers:
 
 packages:
 
-  '@aioha/aioha@1.8.0':
-    resolution: {integrity: sha512-ybgFI/28quDwbsiDALZalJpHWslHQ71ycp9LJh7N80lKkRK7L/cAWXfTt+sJY6Aoz2+f+YH+2WmOxiuWolhdbg==}
+  '@aioha/aioha@1.8.5':
+    resolution: {integrity: sha512-tYXItxEJkmH9PI/UeNYtJz/W2C5jmXzcWrPg6q/k6ibPMPJqXxiCl4OPEVZSvcDLf8Q4BHvQKEAMZlQ+xEQUyQ==}
 
-  '@aioha/i18n-keys@1.0.0':
-    resolution: {integrity: sha512-v4tj1tZcGAdsgIMfbd3G+inwn81KxU5mNZgPR2n3KEKmG+n2if5EvkwhKBC3yjFCbHVQrQwMLDpoY/nPjmID1Q==}
+  '@aioha/i18n-keys@1.0.1':
+    resolution: {integrity: sha512-76wjNdK0EyU+qIYNsUbDi817bTLCeT/6pvZhPU+B5EWDjsCgOPnmCU/LmrGdbaCcgo6JMGhBOjRng8KC6GVrkQ==}
 
-  '@aioha/ledger-app-hive@0.0.2':
-    resolution: {integrity: sha512-+ZUe9Iyv00WA5TDfi7TsCHKl5b22prR06JAG9u/9m9jePbGB83dtUMS65e/q3oXiMX78M4/YaDI8DYdIJmnk1A==}
+  '@aioha/ledger-app-hive@0.0.3':
+    resolution: {integrity: sha512-4OohtL0SCM8gDdYBOyEYEBSz1v0Ke3EKTBOKRDLmdJFN9X3bKohSlFIwGWjie7wIa4DVrmMaL5lIV1AvMQVYSA==}
     engines: {node: '>=18.0.0'}
 
-  '@aioha/providers@1.8.2':
-    resolution: {integrity: sha512-Mgca+n0h7A6zbRks1ZJhPPa41LRJAjbKZpxWDhhljXk4ay0ZZFUCzbSUSen4vC7oD9YTvMTPQWKgydcmoALu0Q==}
+  '@aioha/providers@1.9.0-beta.3':
+    resolution: {integrity: sha512-kN+0mw1PDRyykm7VS0xGgO2Vhv9bsUIJNtWp60QoS06On3CB1yJMOX/oNyPosupHg5FjoEFCWBLt9W2rgk7nSA==}
     peerDependencies:
-      '@aioha/aioha': ^1.8.0
+      '@aioha/aioha': ^1.8.2
+      '@aioha/magi': ^0.0.5
       '@lit/context': ^1.1.0
+      '@wagmi/core': ^3.4.0
+      '@wagmi/vue': ^0.5.0
       lit: ^3.3.0
       react: ^19.1.0
       svelte: ^5.0.0
+      viem: ^2.0.0
       vue: ^3.0.0
+      wagmi: ^3.0.0
     peerDependenciesMeta:
+      '@aioha/magi':
+        optional: true
       '@lit/context':
+        optional: true
+      '@wagmi/core':
+        optional: true
+      '@wagmi/vue':
         optional: true
       lit:
         optional: true
@@ -79,11 +90,15 @@ packages:
         optional: true
       svelte:
         optional: true
+      viem:
+        optional: true
       vue:
         optional: true
+      wagmi:
+        optional: true
 
-  '@aioha/tx-digest@2.0.1':
-    resolution: {integrity: sha512-fl2xm58YB/ZvzN9Pb6hJfhXlknpoq3EYXHD8QJ5Xn6O6w8arkxOUWuYEGD82lZnFFsZsMfQvniExrrvnpvgI1A==}
+  '@aioha/tx-digest@2.0.2':
+    resolution: {integrity: sha512-sY4fLevN7MjggVO4lG+H8iibw6k22ChXmE4mYVU5GitL3mLvoj+VU/zA3KQVxcsszziF1Y/5+TYnnd99vGtx5g==}
 
   '@ecency/bytebuffer@6.0.0':
     resolution: {integrity: sha512-rGPjzD7a7cPtMHjpJEtLMt/RmqX8XK25tN5qjuu9iaDMK/Ril86CecU5DN/TXEMUQMY1p6b2cVvKBLTdFMr2DA==}
@@ -273,8 +288,8 @@ packages:
   '@hiveio/dhive@1.3.2':
     resolution: {integrity: sha512-kJjp3TbpIlODxjJX4BWwvOf+cMxT8CFH/mNQ40RRjR2LP0a4baSWae1G+U/q/NtgjsIQz6Ja40tvnw6KF12I+g==}
 
-  '@hiveio/wax@1.27.11-rc0':
-    resolution: {integrity: sha512-9t7rYkGYby4zXUkE1DaF6VseTj5P4Ka/AQai7z9nSKRqzVnmuNlKI+ZTWxEwmJLU9SyKdz5rKrUNwAi7Xig1tg==}
+  '@hiveio/wax@2.0.2':
+    resolution: {integrity: sha512-56XtjET1thX2rphHM/QwtQbjHws5N059NzabiVA8W7xSZE9x1Dw0HxIYNU2ZzlD1PJ1ux3bQfUyhJtbW+VrCCw==}
     engines: {node: ^20.11 || >= 21.2}
 
   '@jridgewell/gen-mapping@0.3.13':
@@ -295,30 +310,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@ledgerhq/devices@8.4.7':
-    resolution: {integrity: sha512-CljHIaPmtv93H2If1Zs1xW0pgg+M37bAoJkm6+V6Yw5S0MgFWFpLnTTNgCvHXyD8pG0+uq8TuOXUiG1oAV5AyA==}
-
-  '@ledgerhq/devices@8.7.1':
-    resolution: {integrity: sha512-xUtqLp4t7PhVKkMG/mCrSzxGQ25JA06UAIxxq07EwuJKyWaey1gSdvqr0TvbTw/fsJNya4FIBYTrUkjH9XpdBQ==}
-
-  '@ledgerhq/errors@6.22.0':
-    resolution: {integrity: sha512-rXtpIOfHL62jWB7o77PNFD4EDYdcqyMeVgt7TZcmTkWT78cK+YYSUTMrNuGLhnZZZTMLWH023Wgt65OfKIdGBQ==}
-
-  '@ledgerhq/errors@6.27.1':
-    resolution: {integrity: sha512-Q6nXkg63kSjxa8DDBtjSGAuiOP/jQVQM/0f+0R/ovilQKuxMIxEMXPfonvhQ2AIP4bqKOzGV1c9Iqnow22w/Zg==}
-
-  '@ledgerhq/hw-transport-webusb@6.29.14':
-    resolution: {integrity: sha512-JArpm2rDaZyg4Ur8FRl0eV6DWgBHAYIHbldn0NJlr+dAgOQL1MNLjUJAobpeBkYtj8c2DqQogvgnH38OXaI+MA==}
-
-  '@ledgerhq/hw-transport@6.31.14':
-    resolution: {integrity: sha512-aTKItTLDCN2aoZv6nX6weMslgzT0mI8Hp2FEt2iTomQ6V5r1/BRDRbz2WB1989dZsgBajPRuUWhTZ/Bt6tiijw==}
-
-  '@ledgerhq/hw-transport@6.31.7':
-    resolution: {integrity: sha512-R+QMlqoLJDPeCiqwWv85PbZ3m0hel5PwQzWwSIbyEwialqjXnG7LFQgytkgXlgMcayT0chvvLeYjuY5ZfMPY7w==}
-
-  '@ledgerhq/logs@6.13.0':
-    resolution: {integrity: sha512-4+qRW2Pc8V+btL0QEmdB2X+uyx0kOWMWE1/LWsq5sZy3Q5tpi4eItJS6mB0XL3wGW59RQ+8bchNQQ1OW/va8Og==}
 
   '@lit-labs/ssr-dom-shim@1.5.0':
     resolution: {integrity: sha512-HLomZXMmrCFHSRKESF5vklAKsDY7/fsT/ZhqCu3V0UoW/Qbv8wxmO4W9bx4KnCCF2Zak4yuk+AGraK/bPmI4kA==}
@@ -373,6 +364,10 @@ packages:
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@2.2.0':
+    resolution: {integrity: sha512-IYqDGiTXab6FniAgnSdZwgWbomxpy9FtYvLKs7wCUs2a8RkITG+DFGO1DM9cr+E3/RgADRpFjrKVaJ1z6sjtEg==}
+    engines: {node: '>= 20.19.0'}
 
   '@parcel/watcher-android-arm64@2.5.1':
     resolution: {integrity: sha512-KF8+j9nNbUN8vzOFDpRMsaKBHZ/mcjEjMToVMJOhTozkDonQFFrRcfdLWn6yWKCmJKmdVxSgHiYvTCef4/qcBA==}
@@ -1044,9 +1039,6 @@ packages:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
-  js-md5@0.8.3:
-    resolution: {integrity: sha512-qR0HB5uP6wCuRMrWPTrkMaev7MJZwJuuw4fnwAzRgP4J4/F8RwtodOKpGp4XpqsLBFzzgqIO42efFAyz2Et6KQ==}
-
   jsbi@3.2.5:
     resolution: {integrity: sha512-aBE4n43IPvjaddScbvWRA2YlTzKEynHzu7MqOyTipdHucf/VxS63ViCjxYRg86M8Rxwbt/GfzHl1kKERkt45fQ==}
 
@@ -1271,9 +1263,6 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  rxjs@7.8.2:
-    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
-
   safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
 
@@ -1353,9 +1342,6 @@ packages:
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
-  tslib@2.8.1:
-    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
-
   typed-array-buffer@1.0.3:
     resolution: {integrity: sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==}
     engines: {node: '>= 0.4'}
@@ -1373,6 +1359,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   varint@6.0.0:
@@ -1461,42 +1448,37 @@ packages:
 
 snapshots:
 
-  '@aioha/aioha@1.8.0(webextension-polyfill@0.12.0)':
+  '@aioha/aioha@1.8.5(webextension-polyfill@0.12.0)':
     dependencies:
-      '@aioha/ledger-app-hive': 0.0.2
-      '@aioha/tx-digest': 2.0.1
+      '@aioha/ledger-app-hive': 0.0.3
+      '@aioha/tx-digest': 2.0.2
       '@hiveio/dhive': 1.3.2
-      '@hiveio/wax': 1.27.11-rc0
-      '@ledgerhq/hw-transport-webusb': 6.29.14
+      '@hiveio/wax': 2.0.2
       '@metamask/providers': 22.1.1(webextension-polyfill@0.12.0)
-      js-md5: 0.8.3
+      '@noble/hashes': 2.2.0
     transitivePeerDependencies:
       - encoding
       - supports-color
       - webextension-polyfill
 
-  '@aioha/i18n-keys@1.0.0':
+  '@aioha/i18n-keys@1.0.1':
     dependencies:
       intl-messageformat: 11.2.1
 
-  '@aioha/ledger-app-hive@0.0.2':
+  '@aioha/ledger-app-hive@0.0.3':
     dependencies:
-      '@ledgerhq/errors': 6.22.0
-      '@ledgerhq/hw-transport': 6.31.7
-      '@noble/hashes': 1.8.0
       bip32-path: 0.4.2
       bs58: 5.0.0
-      inherits: 2.0.4
       varint: 6.0.0
 
-  '@aioha/providers@1.8.2(@aioha/aioha@1.8.0(webextension-polyfill@0.12.0))(@lit/context@1.1.6)(lit@3.3.2)':
+  '@aioha/providers@1.9.0-beta.3(@aioha/aioha@1.8.5(webextension-polyfill@0.12.0))(@lit/context@1.1.6)(lit@3.3.2)':
     dependencies:
-      '@aioha/aioha': 1.8.0(webextension-polyfill@0.12.0)
+      '@aioha/aioha': 1.8.5(webextension-polyfill@0.12.0)
     optionalDependencies:
       '@lit/context': 1.1.6
       lit: 3.3.2
 
-  '@aioha/tx-digest@2.0.1':
+  '@aioha/tx-digest@2.0.2':
     dependencies:
       bs58: 6.0.0
 
@@ -1628,7 +1610,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@hiveio/wax@1.27.11-rc0':
+  '@hiveio/wax@2.0.2':
     dependencies:
       events: 3.3.0
 
@@ -1655,47 +1637,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
-
-  '@ledgerhq/devices@8.4.7':
-    dependencies:
-      '@ledgerhq/errors': 6.22.0
-      '@ledgerhq/logs': 6.13.0
-      rxjs: 7.8.2
-      semver: 7.7.3
-
-  '@ledgerhq/devices@8.7.1':
-    dependencies:
-      '@ledgerhq/errors': 6.27.1
-      '@ledgerhq/logs': 6.13.0
-      rxjs: 7.8.2
-      semver: 7.7.3
-
-  '@ledgerhq/errors@6.22.0': {}
-
-  '@ledgerhq/errors@6.27.1': {}
-
-  '@ledgerhq/hw-transport-webusb@6.29.14':
-    dependencies:
-      '@ledgerhq/devices': 8.7.1
-      '@ledgerhq/errors': 6.27.1
-      '@ledgerhq/hw-transport': 6.31.14
-      '@ledgerhq/logs': 6.13.0
-
-  '@ledgerhq/hw-transport@6.31.14':
-    dependencies:
-      '@ledgerhq/devices': 8.7.1
-      '@ledgerhq/errors': 6.27.1
-      '@ledgerhq/logs': 6.13.0
-      events: 3.3.0
-
-  '@ledgerhq/hw-transport@6.31.7':
-    dependencies:
-      '@ledgerhq/devices': 8.4.7
-      '@ledgerhq/errors': 6.22.0
-      '@ledgerhq/logs': 6.13.0
-      events: 3.3.0
-
-  '@ledgerhq/logs@6.13.0': {}
 
   '@lit-labs/ssr-dom-shim@1.5.0': {}
 
@@ -1783,6 +1724,8 @@ snapshots:
   '@noble/hashes@1.4.0': {}
 
   '@noble/hashes@1.8.0': {}
+
+  '@noble/hashes@2.2.0': {}
 
   '@parcel/watcher-android-arm64@2.5.1':
     optional: true
@@ -2393,8 +2336,6 @@ snapshots:
 
   jiti@2.6.1: {}
 
-  js-md5@0.8.3: {}
-
   jsbi@3.2.5: {}
 
   klona@2.0.6: {}
@@ -2604,10 +2545,6 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.54.0
       fsevents: 2.3.3
 
-  rxjs@7.8.2:
-    dependencies:
-      tslib: 2.8.1
-
   safe-buffer@5.1.2: {}
 
   safe-buffer@5.2.1: {}
@@ -2696,8 +2633,6 @@ snapshots:
       is-number: 7.0.0
 
   tr46@0.0.3: {}
-
-  tslib@2.8.1: {}
 
   typed-array-buffer@1.0.3:
     dependencies:

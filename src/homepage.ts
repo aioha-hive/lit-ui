@@ -6,6 +6,7 @@ import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { styles } from '../lib/styles.js'
 import { defaultMessages } from '../lib/i18n.js'
+import type { Arrangement } from '../lib/components/login/ProviderSelection.js'
 import '../lib'
 
 const LOCALES: { code: string; label: string }[] = [
@@ -72,6 +73,9 @@ export class Homepage extends LitElement {
   @state()
   private _direction: 'auto' | 'ltr' | 'rtl' = 'auto'
 
+  @state()
+  private _arrangement: Arrangement = 'grid'
+
   private _handleLanguageChange = async (e: Event) => {
     const code = (e.target as HTMLSelectElement).value
     await loadLocaleCatalog(code)
@@ -80,6 +84,10 @@ export class Homepage extends LitElement {
 
   private _handleDirectionChange = (e: Event) => {
     this._direction = (e.target as HTMLSelectElement).value as 'auto' | 'ltr' | 'rtl'
+  }
+
+  private _handleArrangementChange = (e: Event) => {
+    this._arrangement = (e.target as HTMLSelectElement).value as Arrangement
   }
 
   render() {
@@ -119,13 +127,24 @@ export class Homepage extends LitElement {
               <option value="rtl" ?selected="${this._direction === 'rtl'}">rtl</option>
             </select>
           </label>
+          <label class="text-sm text-gray-700 dark:text-gray-200 inline-flex items-center gap-2">
+            <span>Arrangement</span>
+            <select
+              class="text-sm rounded-lg border border-gray-300 bg-white text-gray-900 px-2 py-1.5 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:outline-hidden"
+              .value="${this._arrangement}"
+              @change="${this._handleArrangementChange}"
+            >
+              <option value="grid" ?selected="${this._arrangement === 'grid'}">grid</option>
+              <option value="list" ?selected="${this._arrangement === 'list'}">list</option>
+            </select>
+          </label>
         </div>
         <aioha-modal
           ?displayed="${this._aiohaModalDisplayed}"
           language="${this._language}"
           direction="${this._direction}"
           .loginOptions="${{ msg: 'Hello World', keyType: KeyTypes.Posting }}"
-          arrangement="grid"
+          arrangement="${this._arrangement}"
           .onClose="${() => {
             this._aiohaModalDisplayed = false
           }}"

@@ -101,7 +101,7 @@ export class ProviderSelection extends LitElement {
                   <image href="${icon}" class="h-5" />
                 </svg>
               `}
-          <span class="flex-1 ms-3 whitespace-nowrap">${name}</span>
+          <span class="flex-1 ms-3 whitespace-nowrap text-start">${name}</span>
           ${this._renderBadge(badge)}
         </button>
       </li>
